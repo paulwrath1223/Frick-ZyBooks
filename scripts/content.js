@@ -22,7 +22,14 @@ const e = new Event("change");
 
 console.log("fortnite balls");
 
-setInterval(function() {
+const interval = setInterval(function() {
+  animation_tick()
+  short_answer_tick()
+  mcq_tick()
+}, 5000);
+
+
+function animation_tick() {
   animations = document.getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
 
   for (let i = 0; i < animations.length; i++) {
@@ -35,8 +42,9 @@ setInterval(function() {
     console.log(second_buttons.item(i));
     second_buttons.item(i).click();
   }
+}
 
-
+function short_answer_tick(){
   short_answer_divs = document.getElementsByClassName("question-set-question short-answer-question ember-view")
   console.log("short_answer_divs");
   console.log(short_answer_divs);
@@ -71,15 +79,52 @@ setInterval(function() {
     }
 
   }
-}, 5000);
+}
 
+function mcq_tick(){
+  let mc_questions = document.getElementsByClassName("question-set-question multiple-choice-question ember-view")
+  if(mc_questions.length === 0){
+    console.log("no multiple choice questions exist")
+  } else {
+    for (let i = 0; i < mc_questions.length; i++) {
+      let mc_q_id = mc_questions.item(i).id;
+      console.log(mc_q_id)
+      solve_mcq(mc_q_id)
+    }
+  }
+}
 
+async function solve_mcq(mc_id){
+  let correct_answer_divs = document.getElementById(mc_id).getElementsByClassName("zb-explanation has-explanation correct")
+  if(correct_answer_divs.length === 0){
+    console.log("solving mcq id " + mc_id)
+    let input_divs = document.getElementById(mc_id).getElementsByClassName("zb-radio-button   orange   ")
+    const num_answers = input_divs.length
+    console.log("num_answers: " + num_answers)
+    if(num_answers === 0){
+      console.error("No multiple choice options found")
+    } else {
+      for (let i = 0; i < num_answers; i++){
+        console.log("checking option " + i + ". (index starts at 0)")
+        input_divs.item(i).getElementsByTagName("input")
+        let input_items = input_divs.item(i).getElementsByTagName("input")
+        if(!(input_items.length === 1)){
+          console.error("no input tag found in mcq answer div")
+        } else {
+          input_items.item(0).click()
+          await sleep(2000)
+          correct_answer_divs = document.getElementById(mc_id).getElementsByClassName("zb-explanation has-explanation correct")
+          console.log("correct_answer_divs: ")
+          console.log(correct_answer_divs)
+          if(correct_answer_divs.length === 1){
+            break
+          }
+        }
+      }
+    }
+  }
+}
 
-
-
-
-// for(animation_button in animations){
-//   console.log(animation_button);
-//   // animation_div.click();
-// }
-
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
