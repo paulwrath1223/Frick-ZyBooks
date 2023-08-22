@@ -24,13 +24,25 @@ console.log("fortnite balls");
 
 const interval = setInterval(function() {
   animation_tick()
-  short_answer_tick()
-  mcq_tick()
+  // short_answer_tick()
+  // mcq_tick()
 }, 5000);
 
 
 function animation_tick() {
   animations = document.getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
+  let speed_check_box_divs = document.getElementsByClassName("zb-checkbox   grey label-present right")
+  for (let i = 0; i < speed_check_box_divs.length; i++) {
+    let input_element = speed_check_box_divs.item(i).getElementsByTagName("input")
+    if(input_element.length === 1) { // TODO Fix
+      console.log(input_element.item(0));
+      console.log("value of check box")
+      console.log(input_element.item(0).checked)
+    } else {
+      console.log("Checkbox div did not contain a checkbox")
+    }
+  }
+
 
   for (let i = 0; i < animations.length; i++) {
     console.log(animations.item(i));
