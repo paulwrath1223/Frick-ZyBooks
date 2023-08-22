@@ -13,9 +13,10 @@
   },
   "content_scripts": [
     {
+      "run_at": "document_end",
       "js": ["scripts/content.js"],
       "matches": [
-        "https://learn.zybooks.com/zybook/*"
+        "https://learn.zybooks.com/zybook/*/chapter/*"
       ]
     }
   ]
