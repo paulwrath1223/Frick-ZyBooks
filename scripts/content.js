@@ -13,21 +13,29 @@
 // limitations under the License.
 
 
-let animations
-let second_buttons
-let show_a_buttons
-let short_answer_divs
+
+
+
+
 const e = new Event("change");
 
 let still_working = true;
 let loading_stage = true;
 let done_with_stupid_problems = false;
+let currentUrl = location.href;
 
 
 //
 setInterval(function() {
-  loading_stage = (document.getElementsByClassName("section-announcement zb-card primary assignment-section-announcement").length === 0);
-  if(!loading_stage){
+  if(!(currentUrl === location.href)){
+    still_working = true;
+    loading_stage = true;
+    done_with_stupid_problems = false;
+    currentUrl = location.href;
+  }
+  if(loading_stage){
+    loading_stage = (document.getElementsByClassName("section-announcement zb-card primary assignment-section-announcement").length === 0);
+  } else {
     if(still_working){
       tick_handler();
     } else {
@@ -56,7 +64,7 @@ function tick_handler(){
 
 
 function animation_tick() {
-  animations = document.getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
+  let animations = document.getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
   let speed_check_box_divs = document.getElementsByClassName("zb-checkbox   grey label-present right")
   for (let i = 0; i < speed_check_box_divs.length; i++) {
     let input_element = speed_check_box_divs.item(i).getElementsByTagName("input")
@@ -69,7 +77,7 @@ function animation_tick() {
       console.error("Checkbox div did not contain a checkbox")
     }
   }
-  second_buttons = document.getElementsByClassName("play-button  bounce");
+  let second_buttons = document.getElementsByClassName("play-button  bounce");
 
 
   // <button aria-label="Pause" class="zb-button  grey             normalize-controls" aria-live="polite" type="button">
@@ -115,7 +123,7 @@ function animation_tick() {
 
 function short_answer_tick(){
   let change = false
-  short_answer_divs = document.getElementsByClassName("question-set-question short-answer-question ember-view")
+  let short_answer_divs = document.getElementsByClassName("question-set-question short-answer-question ember-view")
   if(short_answer_divs.length === 0){
     return false;
   }
@@ -128,7 +136,7 @@ function short_answer_tick(){
     {
       change = true;
       let forfeit_answers = short_answer_divs.item(i).getElementsByClassName("forfeit-answer ");
-      show_a_buttons = short_answer_divs.item(i).getElementsByClassName("zb-button  secondary             show-answer-button");
+      let show_a_buttons = short_answer_divs.item(i).getElementsByClassName("zb-button  secondary             show-answer-button");
       if (forfeit_answers.length === 0){
         for (let i = 0; i < show_a_buttons.length; i++) {
           // console.log(show_a_buttons.item(i));
