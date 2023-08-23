@@ -28,6 +28,19 @@ const interval = setInterval(function() {
   // mcq_tick()
 }, 5000);
 
+// "interactive-activity-container animation-player-content-resource participation large ember-view" animation div class name
+function get_animation_div_ids(){
+  let id_array = [];
+  let animation_divs = document.getElementsByClassName("interactive-activity-container animation-player-content-resource participation large ember-view");
+  if(animation_divs.length === 0){
+    console.log("no animation problems");
+  } else {
+    for (let i = 0; i < animation_divs.length; i++) {
+      id_array.push(animation_divs.item(i).id);
+    }
+  }
+  return id_array;
+}
 
 function animation_tick() {
   animations = document.getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
