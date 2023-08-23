@@ -78,12 +78,23 @@ function get_animation_div_ids(){
 
 
 /*
+button html DOM to add event listener to:
+
+<div aria-label="Activity not completed" role="img" class="zb-chevron  title-bar-chevron grey   chevron-outline large">
+
+</div>
+ */
+
+
+
+
+/*
 Returns true if solved, false if error
  */
 function finish_animation(animation_div_id) {
   while(true){
-    let animations = document.getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
-    let speed_check_box_divs = document.getElementsByClassName("zb-checkbox   grey label-present right")
+    let animations = document.getElementById(animation_div_id).getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
+    let speed_check_box_divs = document.getElementById(animation_div_id).getElementsByClassName("zb-checkbox   grey label-present right")
     for (let i = 0; i < speed_check_box_divs.length; i++) {
       let input_element = speed_check_box_divs.item(i).getElementsByTagName("input")
       if(input_element.length === 1) {
@@ -96,9 +107,9 @@ function finish_animation(animation_div_id) {
         return false
       }
     }
-    let second_buttons = document.getElementsByClassName("play-button  bounce");
+    let second_buttons = document.getElementById(animation_div_id).getElementsByClassName("play-button  bounce");
     let pause_buttons_present = false;
-    let possible_pause_buttons = document.getElementsByClassName("zb-button  grey             normalize-controls")
+    let possible_pause_buttons = document.getElementById(animation_div_id).getElementsByClassName("zb-button  grey             normalize-controls")
     for (let i = 0; i < possible_pause_buttons.length; i++) {
       if(possible_pause_buttons.item(i).getAttribute("aria-label") === "Pause"){
         pause_buttons_present = true;
