@@ -76,62 +76,47 @@ function get_animation_div_ids(){
   return id_array;
 }
 
-function animation_tick() {
-  let animations = document.getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
-  let speed_check_box_divs = document.getElementsByClassName("zb-checkbox   grey label-present right")
-  for (let i = 0; i < speed_check_box_divs.length; i++) {
-    let input_element = speed_check_box_divs.item(i).getElementsByTagName("input")
-    if(input_element.length === 1) {
-      if(input_element.item(0).checked === false){
-        input_element.item(0).click();
+
+/*
+Returns true if solved, false if error
+ */
+function finish_animation(animation_div_id) {
+  while(true){
+    let animations = document.getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
+    let speed_check_box_divs = document.getElementsByClassName("zb-checkbox   grey label-present right")
+    for (let i = 0; i < speed_check_box_divs.length; i++) {
+      let input_element = speed_check_box_divs.item(i).getElementsByTagName("input")
+      if(input_element.length === 1) {
+        if(input_element.item(0).checked === false){
+          input_element.item(0).click();
+        }
+        input_element.item(0).dispatchEvent(e);
+      } else {
+        console.error("Checkbox div did not contain a checkbox")
+        return false
       }
-      input_element.item(0).dispatchEvent(e);
-    } else {
-      console.error("Checkbox div did not contain a checkbox")
+    }
+    let second_buttons = document.getElementsByClassName("play-button  bounce");
+    let pause_buttons_present = false;
+    let possible_pause_buttons = document.getElementsByClassName("zb-button  grey             normalize-controls")
+    for (let i = 0; i < possible_pause_buttons.length; i++) {
+      if(possible_pause_buttons.item(i).getAttribute("aria-label") === "Pause"){
+        pause_buttons_present = true;
+      }
+    }
+    if(second_buttons.length === 0 && animations.length === 0 && !pause_buttons_present) {
+      return true
+    }
+    for (let i = 0; i < animations.length; i++) {
+      // console.log(animations.item(i));
+      animations.item(i).click();
+    }
+    for (let i = 0; i < second_buttons.length; i++) {
+      // console.log(second_buttons.item(i));
+      second_buttons.item(i).click();
     }
   }
-  let second_buttons = document.getElementsByClassName("play-button  bounce");
 
-
-  // <button aria-label="Pause" class="zb-button  grey             normalize-controls" aria-live="polite" type="button">
-  //
-  //                     <div aria-hidden="true" class="pause-button  ">
-  //                     </div>
-  //
-  // </button>
-  let pause_buttons_present = false;
-  let possible_pause_buttons = document.getElementsByClassName("zb-button  grey             normalize-controls")
-  for (let i = 0; i < possible_pause_buttons.length; i++) {
-    if(possible_pause_buttons.item(i).getAttribute("aria-label") === "Pause"){
-      // console.log("pause button found: ");
-      // console.log(possible_pause_buttons.item(i));
-      pause_buttons_present = true;
-    }
-  }
-  if(second_buttons.length === 0 && animations.length === 0 && !pause_buttons_present){
-    // console.log("animation_tick returns false")
-    return false;
-  // } else {
-  //   console.log("animation_tick returns true");
-  //   console.log("pause_buttons_present: " + pause_buttons_present);
-  //   console.log("second_buttons.length === 0: " + (second_buttons.length === 0));
-  //   console.log("second_buttons: ");
-  //   console.log(second_buttons);
-  //   console.log("animations.length === 0: " + (animations.length === 0));
-  //
-  }
-
-  for (let i = 0; i < animations.length; i++) {
-    // console.log(animations.item(i));
-    animations.item(i).click();
-  }
-
-
-  for (let i = 0; i < second_buttons.length; i++) {
-    // console.log(second_buttons.item(i));
-    second_buttons.item(i).click();
-  }
-  return true;
 }
 
 function short_answer_tick(){
