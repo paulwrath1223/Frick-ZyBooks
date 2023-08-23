@@ -85,6 +85,17 @@ button html DOM to add event listener to:
 </div>
  */
 
+/*
+EXAMPLE
+
+function myAlert(){
+  alert('hello world');
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('alertButton').addEventListener('click', myAlert);
+});
+*/
 
 
 
