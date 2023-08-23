@@ -1,16 +1,3 @@
-// Copyright 2022 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
 
 
@@ -22,28 +9,38 @@ const e = new Event("change");
 let still_working = true;
 let loading_stage = true;
 let done_with_stupid_problems = false;
+let listeners_attached = false;
 let currentUrl = location.href;
 
 
 //
 setInterval(function() {
+  console.log("c")
   if(!(currentUrl === location.href)){
     still_working = true;
     loading_stage = true;
     done_with_stupid_problems = false;
+    listeners_attached = false;
     currentUrl = location.href;
   }
   if(loading_stage){
-    loading_stage = (document.getElementsByClassName("section-announcement zb-card primary assignment-section-announcement").length === 0);
+    console.log("loading")
+    loading_stage = (document.getElementsByClassName("zybook-section-title").length === 0);
   } else {
-    if(still_working){
-      tick_handler();
-    } else {
-      if(!done_with_stupid_problems){
-        alert("Removed stupid ass problems");
-        done_with_stupid_problems = true;
-      }
+    console.log("a")
+    if(!listeners_attached){
+      console.log("b")
+      attach_button_event_listeners()
+      listeners_attached = true;
     }
+    // if(still_working){
+    //   tick_handler();
+    // } else {
+    //   if(!done_with_stupid_problems){
+    //     alert("Removed stupid ass problems");
+    //     done_with_stupid_problems = true;
+    //   }
+    // }
   }
 }, 2000);
 
@@ -97,6 +94,22 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 */
 
+function attach_button_event_listeners(){
+  console.log("did thing1")
+  let button_divs = document.getElementsByClassName("zb-chevron  title-bar-chevron grey   chevron-outline large")
+  let item;
+  for (let i = 0; i < button_divs.length; i++) {
+    item = button_divs.item(i);
+    document.addEventListener('click', (event) => {
+      button_click_listener(event);
+    });
+  }
+
+}
+
+function button_click_listener(event_var){
+  console.log(event_var);
+}
 
 
 /*
