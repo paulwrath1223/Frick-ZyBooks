@@ -1,7 +1,3 @@
-
-
-//TODO: set titles for errors
-
 const e = new Event("change");
 
 let loading_stage = true;
@@ -73,9 +69,6 @@ function get_animation_div_ids(){
   return(get_DOM_ids_from_class_name("interactive-activity-container animation-player-content-resource participation large ember-view"))
 }
 
-/*
-Returns true if solved, false if error
- */
 async function animation_div_click_event_handler(event, animation_div_id) {
   console.log(event);
   console.log("animation_div_click_event_handler called with ID: " + animation_div_id);
@@ -128,19 +121,26 @@ function get_short_answer_div_ids(){
 async function short_answer_div_click_event_handler(event, short_answer_div_id){
   set_title(short_answer_div_id, "Processing...");
   let completed_short_answers = 0;
-  let done = false;
+  let failure = false;
   let short_answer_divs;
   short_answer_divs = document.getElementById(short_answer_div_id).getElementsByClassName("question-set-question short-answer-question ember-view");
   const num_short_answers = short_answer_divs.length;
   for (let i = 0; i < num_short_answers; i++) {
-    solve_individual_short_answer_problem_by_id(short_answer_divs.item(i).id).then(() => {
+    solve_individual_short_answer_problem_by_id(short_answer_divs.item(i).id).then((success) => {
       completed_short_answers += 1;
+      if(!success){
+        failure = true;
+      }
     });
   }
   while(!(completed_short_answers === num_short_answers)){
     await sleep(10);
   }
-  set_title(short_answer_div_id, "Done");
+  if(failure){
+    set_title(short_answer_div_id, "Error");
+  } else {
+    set_title(short_answer_div_id, "Done");
+  }
 }
 
 async function solve_individual_short_answer_problem_by_id(short_answer_problem_id){ // TODO: this function does not work
@@ -162,12 +162,14 @@ async function solve_individual_short_answer_problem_by_id(short_answer_problem_
       let text_boxes = individual_short_answer.getElementsByClassName("ember-text-area ember-view zb-text-area hide-scrollbar")
       if(text_boxes.length === 0){
         console.error("NO TEXT INPUT FIELD FOUND");
+        return false;
       } else {
         text_boxes.item(0).value = answer.trim();
         text_boxes.item(0).dispatchEvent(e);
         let check_buttons = individual_short_answer.getElementsByClassName("zb-button  primary  raised           check-button")
         if(check_buttons.length === 0){
           console.error("NO CHECK BUTTONS FOUND");
+          return false;
         } else {
           check_buttons.item(0).click();
         }
@@ -177,6 +179,7 @@ async function solve_individual_short_answer_problem_by_id(short_answer_problem_
     individual_short_answer = document.getElementById(short_answer_problem_id)
     await sleep(1000)
   }
+  return true;
 }
 
 function get_mcq_div_ids(){
@@ -189,21 +192,29 @@ async function mcq_div_click_event_handler(event, mcq_div_id){
   let mc_questions = document.getElementById(mcq_div_id).getElementsByClassName("question-set-question multiple-choice-question ember-view")
   let correct_answer_divs;
   let mcq_id;
+  let failure = false;
   const num_problems = mc_questions.length;
   for (let i = 0; i < num_problems; i++) {
     mcq_id = mc_questions.item(i).id;
     correct_answer_divs = mc_questions.item(i).getElementsByClassName("zb-explanation has-explanation correct")
     if(correct_answer_divs.length === 0) {
       // console.log(mc_q_id)
-      solve_mcq(mcq_id).then(() => {
+      solve_mcq(mcq_id).then((success) => {
         num_solved += 1;
+        if (!success) {
+          failure = true;
+        }
       })
     }
   }
   while(!(num_solved === num_problems)){
     await sleep(10);
   }
-  set_title(mcq_div_id, "Done");
+  if(failure){
+    set_title(mcq_div_id, "Error");
+  } else {
+    set_title(mcq_div_id, "Done");
+  }
 }
 
 async function solve_mcq(mcq_id){
@@ -228,11 +239,12 @@ async function solve_mcq(mcq_id){
         // console.log("correct_answer_divs: ")
         // console.log(correct_answer_divs)
         if (correct_answer_divs.length === 1) {
-          break;
+          return true;
         }
       }
     }
   }
+  return false;
 }
 
 function sleep(ms) {
