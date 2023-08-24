@@ -34,9 +34,7 @@ setInterval(function() {
 
     if(!listeners_attached){
       // TODO: make sure problem is still unsolved? maybe fine, especially for debugging. either way, if problems should be able to be resolved, also add event listeners to the checked completion indicator div. if not, use remove event listener
-
-      attach_button_event_listeners()
-      listeners_attached = true;
+      listeners_attached = attach_button_event_listeners();
     }
   }
 }, 100);
@@ -46,6 +44,7 @@ function attach_button_event_listeners(){
   let current_div_id
   let button_divs;
   let button_div_id;
+  let attached = false;
   for (let i = 0; i < problem_solvers.length; i++) {
     current_div_ids = problem_solvers[i].locator_function();
 
@@ -57,7 +56,7 @@ function attach_button_event_listeners(){
 
         button_div_id = ("FZYB_" + (problem_solvers[i].problem_type_string) + "_" + j);
         button_divs.item(k).id = button_div_id;
-
+        attached = true;
         const copy_of_current_div_id = current_div_id; // probably needed to avoid events calling function with reference of new variable
         document.getElementById(button_div_id).addEventListener('mouseup', (event) => {
           problem_solvers[i].click_event_handler(event, copy_of_current_div_id);
@@ -65,6 +64,7 @@ function attach_button_event_listeners(){
       }
     }
   }
+  return attached;
 }
 
 function get_animation_div_ids(){
