@@ -51,7 +51,7 @@ function get_solvable_divs(){
   let solvable_problem_div_ids = []
 
   solvable_problem_div_ids = solvable_problem_div_ids.concat(get_animation_div_ids());
-  solvable_problem_div_ids = solvable_problem_div_ids.concat(get_animation_div_ids());
+  solvable_problem_div_ids = solvable_problem_div_ids.concat(get_short_answer_div_ids());
   solvable_problem_div_ids = solvable_problem_div_ids.concat(get_animation_div_ids());
 
 
@@ -166,6 +166,15 @@ function finish_animation(animation_div_id) {
 
 }
 
+function get_short_answer_div_ids(){
+  let short_answer_div_ids = []
+  let short_answer_divs = document.getElementsByClassName("question-set-question short-answer-question ember-view")
+  for (let i = 0; i < short_answer_divs.length; i++) {
+    short_answer_div_ids.push(short_answer_divs.item(i).id)
+  }
+  return short_answer_div_ids;
+}
+
 function short_answer_tick(){
   let change = false
   let short_answer_divs = document.getElementsByClassName("question-set-question short-answer-question ember-view")
@@ -210,6 +219,16 @@ function short_answer_tick(){
   }
   return change;
 }
+
+function get_mcq_div_ids(){
+  let mcq_div_ids
+  let mc_questions = document.getElementsByClassName("question-set-question multiple-choice-question ember-view")
+  for (let i = 0; i < mc_questions.length; i++) {
+
+  }
+}
+
+
 
 function mcq_tick(){
   let mc_questions = document.getElementsByClassName("question-set-question multiple-choice-question ember-view")
