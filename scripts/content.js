@@ -17,7 +17,9 @@ class problem_solver{
 const problem_solvers = [
     new problem_solver("animation", "interactive-activity-container animation-player-content-resource participation large ember-view", animation_div_click_event_handler, get_animation_div_ids),
     new problem_solver("mcq", "interactive-activity-container multiple-choice-content-resource participation large ember-view", mcq_div_click_event_handler, get_mcq_div_ids),
-    new problem_solver("short_answer", "interactive-activity-container short-answer-content-resource participation large ember-view", short_answer_div_click_event_handler, get_short_answer_div_ids)
+    new problem_solver("short_answer", "interactive-activity-container short-answer-content-resource participation large ember-view", short_answer_div_click_event_handler, get_short_answer_div_ids),
+    new problem_solver("drag_and_drop", "interactive-activity-container custom-content-resource participation large ember-view", drag_and_drop_div_click_event_handler, get_drag_and_drop_div_ids),
+    new problem_solver("enter_output", "interactive-activity-container custom-content-resource challenge large ember-view", enter_output_div_click_event_handler, get_enter_output_div_ids),
 ]
 
 setInterval(function() {
@@ -29,11 +31,9 @@ setInterval(function() {
   if(loading_stage){
     listeners_attached = false;
     console.log("loading")
-    loading_stage = (document.getElementsByClassName("zybook-section-title").length === 0); // TODO: UNRELIABLE method of checking if the page has loaded, attempts to attach listeners before sections are actually loaded.
+    loading_stage = (document.getElementsByClassName("zybook-section-title").length === 0);
   } else {
-
     if(!listeners_attached){
-      // TODO: make sure problem is still unsolved? maybe fine, especially for debugging. either way, if problems should be able to be resolved, also add event listeners to the checked completion indicator div. if not, use remove event listener
       listeners_attached = attach_button_event_listeners();
     }
   }
@@ -51,7 +51,7 @@ function attach_button_event_listeners(){
     for (let j = 0; j < current_div_ids.length; j++) {
       current_div_id = current_div_ids[j];
 
-      button_divs = document.getElementById(current_div_id).getElementsByClassName("zb-chevron  title-bar-chevron grey   chevron-outline large");
+      button_divs = document.getElementById(current_div_id).getElementsByClassName("zb-chevron  title-bar-chevron grey   chevron-outline large"); // TODO, also get filled check boxes
       for (let k = 0; k < button_divs.length; k++) {
 
         button_div_id = ("FZYB_" + (problem_solvers[i].problem_type_string) + "_" + j);
@@ -65,6 +65,44 @@ function attach_button_event_listeners(){
     }
   }
   return attached;
+}
+
+function get_drag_and_drop_div_ids(){
+  return(get_DOM_ids_from_class_name("interactive-activity-container custom-content-resource participation large ember-view")); // TODO: this class name is not specific to drag and drop questions
+}
+
+async function enter_output_div_click_event_handler(event, enter_output_div_id){
+  set_title(enter_output_div_id, "Enter output problems not yet implemented");
+// #include <iostream>
+// using namespace std;
+//
+// int main() {
+//   int numItems;
+//
+//   numItems = 5;
+//
+//   if (numItems > 3) {
+//     cout << "c" << endl;
+//   }
+//   else if (numItems < 8) {
+//     cout << "e" << endl;
+//   }
+//   else {
+//     cout << "k" << endl;
+//   }
+//
+//   cout << "r" << endl;
+//
+//   return 0;
+// }
+}
+
+async function drag_and_drop_div_click_event_handler(event, drag_and_drop_div_id){
+  set_title(drag_and_drop_div_id, "Drag and drop problems not yet implemented");
+}
+
+function get_enter_output_div_ids(){
+  return(get_DOM_ids_from_class_name("interactive-activity-container custom-content-resource challenge large ember-view")); // TODO: this class name is not specific to enter output questions
 }
 
 function get_animation_div_ids(){
@@ -270,3 +308,5 @@ function set_title(div_id, new_title){
     title_DOMS.item(0).innerText = new_title;
   }
 }
+
+
