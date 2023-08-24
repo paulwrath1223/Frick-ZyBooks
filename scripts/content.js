@@ -52,9 +52,9 @@ function get_solvable_divs(){
 
   solvable_problem_div_ids = solvable_problem_div_ids.concat(get_animation_div_ids());
   solvable_problem_div_ids = solvable_problem_div_ids.concat(get_short_answer_div_ids());
-  solvable_problem_div_ids = solvable_problem_div_ids.concat(get_animation_div_ids());
+  solvable_problem_div_ids = solvable_problem_div_ids.concat(get_mcq_div_ids());
 
-
+  return solvable_problem_div_ids
 }
 
 function tick_handler(){
@@ -221,11 +221,12 @@ function short_answer_tick(){
 }
 
 function get_mcq_div_ids(){
-  let mcq_div_ids
+  let mcq_div_ids = [];
   let mc_questions = document.getElementsByClassName("question-set-question multiple-choice-question ember-view")
   for (let i = 0; i < mc_questions.length; i++) {
-
+    mcq_div_ids.push(mc_questions.item(i).id);
   }
+  return mcq_div_ids;
 }
 
 
