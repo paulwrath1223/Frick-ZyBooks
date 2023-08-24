@@ -1,3 +1,4 @@
+
 const e = new Event("change");
 
 let loading_stage = true;
@@ -26,8 +27,9 @@ setInterval(function() {
     currentUrl = location.href;
   }
   if(loading_stage){
+    listeners_attached = false;
     console.log("loading")
-    loading_stage = (document.getElementsByClassName("zybook-section-title").length === 0);
+    loading_stage = (document.getElementsByClassName("zybook-section-title").length === 0); // TODO: UNRELIABLE method of checking if the page has loaded, attempts to attach listeners before sections are actually loaded.
   } else {
 
     if(!listeners_attached){
