@@ -13,6 +13,8 @@ let listeners_attached = false;
 let currentUrl = location.href;
 
 
+
+
 //
 setInterval(function() {
   console.log("c")
@@ -44,6 +46,16 @@ setInterval(function() {
   }
 }, 2000);
 
+
+function get_solvable_divs(){
+  let solvable_problem_div_ids = []
+
+  solvable_problem_div_ids = solvable_problem_div_ids.concat(get_animation_div_ids());
+  solvable_problem_div_ids = solvable_problem_div_ids.concat(get_animation_div_ids());
+  solvable_problem_div_ids = solvable_problem_div_ids.concat(get_animation_div_ids());
+
+
+}
 
 function tick_handler(){
   console.log("start tick_handler still_working state: " + still_working);
