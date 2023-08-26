@@ -42,7 +42,7 @@ function attach_button_event_listeners(){
       const button_div_id = ("FZYB_" + (problem_object.problem_type_string) + "_" + problem_number);
       if (!(button_divs.item(k).id === button_div_id)) {
         button_divs.item(k).id = button_div_id;
-
+        document.getElementById(button_div_id).style.cursor = "pointer";
         const copy_of_current_div_id = current_root_div; // probably needed to avoid events calling function with reference of new variable
         document.getElementById(button_div_id).addEventListener('mouseup', (event) => {
           problem_object.click_event_handler(event, copy_of_current_div_id);
@@ -108,51 +108,49 @@ async function enter_output_div_click_event_handler(event, enter_output_div_id){
   }
   await sleep(200);
 
-  while(continue_loop(enter_output_div_id) && !experienced_error){ // TODO: make this not an ugly ass nesting of various error checks.
+  while(continue_loop(enter_output_div_id) && !experienced_error){
     await sleep(200);
     let code_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("code");
     let code_plain_text = "";
     if(!(code_DOMs.length === 1)) {
       set_title(enter_output_div_id, "Error: no code found");
       experienced_error = true;
-    } else {
-      code_plain_text = code_DOMs.item(0).innerText;
-      code_output = await compile_cpp(code_plain_text)
-      if(code_output === undefined){
-        experienced_error = true;
-        set_title(enter_output_div_id, "Error: API did not produce an output");
-      } else {
-        let input_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("console");
-        if(!(input_DOMs.length === 1)) {
-          set_title(enter_output_div_id, "Error: no text area found");
-          experienced_error = true;
-        } else {
-          input_DOMs.item(0).value = code_output.replace("\\n", "\n");
-          input_DOMs.item(0).dispatchEvent(e);
-          const check_output_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("zyante-progression-check-button button");
-          if(!(check_output_DOMs.length === 1)) {
-            set_title(enter_output_div_id, "Error: No \'check\' button found");
-            experienced_error = true;
-          } else {
-            check_output_DOMs.item(0).click();
-            if(!await check_correctness(enter_output_div_id))
-            {
-              set_title(enter_output_div_id, "Error: Incorrect answer or timed out waiting for feedback");
-              experienced_error = true;
-            } else {
-              await sleep(100);
-              const next_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("zyante-progression-next-button button");
-              if(!(next_DOMs.length === 1)) {
-                set_title(enter_output_div_id, "Error: No \'next\' button found");
-                experienced_error = true;
-              } else {
-                next_DOMs.item(0).click()
-              }
-            }
-          }
-        }
-      }
+      break;
     }
+    code_plain_text = code_DOMs.item(0).innerText;
+    code_output = await compile_cpp(code_plain_text)
+    if(code_output === undefined){
+      experienced_error = true;
+      set_title(enter_output_div_id, "Error: API did not produce an output");
+      break;
+    }
+    let input_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("console");
+    if(!(input_DOMs.length === 1)) {
+      set_title(enter_output_div_id, "Error: no text area found");
+      experienced_error = true;
+      break;
+    }
+    input_DOMs.item(0).value = code_output.replace("\\n", "\n");
+    input_DOMs.item(0).dispatchEvent(e);
+    const check_output_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("zyante-progression-check-button button");
+    if(!(check_output_DOMs.length === 1)) {
+      set_title(enter_output_div_id, "Error: No \'check\' button found");
+      experienced_error = true;
+    }
+    check_output_DOMs.item(0).click();
+    if(!await check_correctness(enter_output_div_id))
+    {
+      set_title(enter_output_div_id, "Error: Incorrect answer or timed out waiting for feedback");
+      experienced_error = true;
+    }
+    await sleep(100);
+    const next_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("zyante-progression-next-button button");
+    if(!(next_DOMs.length === 1)) {
+      set_title(enter_output_div_id, "Error: No \'next\' button found");
+      experienced_error = true;
+      break;
+    }
+    next_DOMs.item(0).click()
   }
   if(!continue_loop(enter_output_div_id)){
     set_title(enter_output_div_id, "Done");
