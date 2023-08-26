@@ -1,7 +1,11 @@
 
 const e = new Event("change");
+// used to trigger ZyBooks to read text boxes after being changed programmatically
 
-
+/*
+  class for a problem type e.g. Short answer, and its associated functions.
+  Useful for making the script mor modular
+ */
 class problem_solver{
   constructor(problem_type_string, div_class_name, click_event_handler, locator_function) {
     this.div_class_name = div_class_name;
@@ -10,6 +14,14 @@ class problem_solver{
     this.problem_type_string = problem_type_string;
   }
 }
+
+
+// email paul@fornage.net for questions, happy to respond
+// To add a new solver for a different problem type:
+//    add it to the list below. 'div_class_name' is not currently used, so you can put anything.
+//    add a string description of the problem type. This just needs to be unique, so you could put a random hash, but it would be nice if you use an identifiable string
+//    add a function that returns a list of HTML IDs for all the problems of that type. The IDs change every time the page loads, so you can't just save a list.
+//    make a function that solves the problem when called. It will be called when the user clicks the badge next to that problem.
 
 const problem_solvers = [
     new problem_solver("animation", "interactive-activity-container animation-player-content-resource participation large ember-view", animation_div_click_event_handler, get_animation_div_ids),
@@ -24,6 +36,14 @@ setInterval(function() {
   remove_watermarks();
 }, 200);
 
+
+/*
+  I suspect these watermarks (that appear very faintly on all coding questions)
+  are actually your zybooks user ID hashed or something so that if they find a screenshot of a solution on the web,
+  they can figure out what user shared it.
+  I remove these because it would also make it possible for ZyBooks to identify a user of this program as a cheater
+  if they post a demo video
+ */
 function remove_watermarks(){
   const watermark_DOMs = document.getElementsByClassName("activity-watermark");
   for(let i = 0; i < watermark_DOMs.length; i ++){
@@ -370,6 +390,9 @@ function get_DOM_ids_from_class_name(class_name){
   return id_array;
 }
 
+/*
+ Sets the title of the problem set to [new_title]. Useful for showing progress to the user
+ */
 function set_title(div_id, new_title){
   const title_DOMS = document.getElementById(div_id).getElementsByClassName("activity-title")
   if(!(title_DOMS.length === 1)){
