@@ -419,7 +419,7 @@ async function compile_cpp(code_string) {
   });
   xhr.open('POST', 'https://online-code-compiler.p.rapidapi.com/v1/');
   xhr.setRequestHeader('content-type', 'application/json');
-  xhr.setRequestHeader('X-RapidAPI-Key', '591f261ff4msh26f3f44db0aa77bp1c5c8fjsn002736b5e301');
+  xhr.setRequestHeader('X-RapidAPI-Key', 'RAPID_API_KEY');
   xhr.setRequestHeader('X-RapidAPI-Host', 'online-code-compiler.p.rapidapi.com');
   xhr.send(data);
   while (!(response_received || timed_out)) {
