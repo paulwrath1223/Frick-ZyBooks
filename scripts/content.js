@@ -1,7 +1,6 @@
 
 const e = new Event("change");
 
-
 class problem_solver{
   constructor(problem_type_string, div_class_name, click_event_handler, locator_function) {
     this.div_class_name = div_class_name;
@@ -24,7 +23,7 @@ setInterval(function() {
   remove_watermarks();
 }, 200);
 
-async function remove_watermarks(){
+function remove_watermarks(){
   const watermark_DOMs = document.getElementsByClassName("activity-watermark");
   for(let i = 0; i < watermark_DOMs.length; i ++){
     watermark_DOMs.item(i).textContent = "foiled again";
@@ -34,48 +33,34 @@ async function remove_watermarks(){
 function attach_button_event_listeners(){
   let current_div_ids = [];
   let current_div_id
-  let incomplete_button_divs;
-  let button_div_id;
-  let complete_button_divs;
-  for (let i = 0; i < problem_solvers.length; i++) {
-    current_div_ids = problem_solvers[i].locator_function();
 
-    for (let j = 0; j < current_div_ids.length; j++) {
-      current_div_id = current_div_ids[j];
+  const add_class_to_linked_DOMs = function(current_root_div, class_name, problem_object, problem_number){
+    const button_divs = document.getElementById(current_root_div).getElementsByClassName(class_name);
 
-      incomplete_button_divs = document.getElementById(current_div_id).getElementsByClassName("zb-chevron  title-bar-chevron grey   chevron-outline large");
+    for (let k = 0; k < button_divs.length; k++) {
 
-      for (let k = 0; k < incomplete_button_divs.length; k++) {
+      const button_div_id = ("FZYB_" + (problem_object.problem_type_string) + "_" + problem_number);
+      if (!(button_divs.item(k).id === button_div_id)) {
+        button_divs.item(k).id = button_div_id;
 
-        button_div_id = ("FZYB_" + (problem_solvers[i].problem_type_string) + "_" + j);
-        if (!(incomplete_button_divs.item(k).id === button_div_id)) {
-          incomplete_button_divs.item(k).id = button_div_id;
-
-          const copy_of_current_div_id = current_div_id; // probably needed to avoid events calling function with reference of new variable
-          document.getElementById(button_div_id).addEventListener('mouseup', (event) => {
-            problem_solvers[i].click_event_handler(event, copy_of_current_div_id);
-          });
-        }
-
+        const copy_of_current_div_id = current_root_div; // probably needed to avoid events calling function with reference of new variable
+        document.getElementById(button_div_id).addEventListener('mouseup', (event) => {
+          problem_object.click_event_handler(event, copy_of_current_div_id);
+        });
       }
 
-      complete_button_divs = document.getElementById(current_div_id).getElementsByClassName("zb-chevron check title-bar-chevron orange  filled  large");
-      for (let k = 0; k < complete_button_divs.length; k++) {
-
-        button_div_id = ("FZYB_" + (problem_solvers[i].problem_type_string) + "_" + j);
-        if (!(complete_button_divs.item(k).id === button_div_id)) {
-          complete_button_divs.item(k).id = button_div_id;
-
-          const copy_of_current_div_id = current_div_id; // probably needed to avoid events calling function with reference of new variable
-          document.getElementById(button_div_id).addEventListener('mouseup', (event) => {
-            problem_solvers[i].click_event_handler(event, copy_of_current_div_id);
-          });
-        }
-      }
     }
   }
-  // TODO: also include completed blue checks, and make this code more modular
-//   zb-chevron check title-bar-chevron blue  filled  large
+
+  for (let i = 0; i < problem_solvers.length; i++) {
+    current_div_ids = problem_solvers[i].locator_function();
+    for (let j = 0; j < current_div_ids.length; j++) {
+      current_div_id = current_div_ids[j];
+      add_class_to_linked_DOMs(current_div_id, "zb-chevron check title-bar-chevron orange  filled  large", problem_solvers[i], j);
+      add_class_to_linked_DOMs(current_div_id, "zb-chevron check title-bar-chevron blue  filled  large", problem_solvers[i], j);
+      add_class_to_linked_DOMs(current_div_id, "zb-chevron  title-bar-chevron grey   chevron-outline large", problem_solvers[i], j);
+    }
+  }
 }
 
 function get_drag_and_drop_div_ids(){
