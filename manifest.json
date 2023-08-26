@@ -1,15 +1,21 @@
 {
   "manifest_version": 3,
-  "name": "Fuck ZyBooks",
+  "name": "Frick ZyBooks",
   "version": "1.0",
-  "description": "Fucks ZyBooks, its in the name",
-
+  "description": "Fricks ZyBooks, its in the name",
+  "permissions": [
+    "storage"
+  ],
+  "options_page": "options.html",
   "icons": {
     "16": "images/FZY16.png",
     "32": "images/FZY32.png",
     "48": "images/FZY48.png",
     "64": "images/FZY64.png",
     "128": "images/FZY128.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {

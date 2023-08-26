@@ -1,6 +1,7 @@
 
 const e = new Event("change");
 
+
 class problem_solver{
   constructor(problem_type_string, div_class_name, click_event_handler, locator_function) {
     this.div_class_name = div_class_name;
@@ -383,6 +384,12 @@ async function compile_cpp(code_string) {
   const timeoutID = setTimeout(() => {
     timed_out = true;
   }, 10000);
+
+  let API_key = await get_API_key();
+  if(API_key === ""){
+    alert("failed to get API key. Set this by clicking on the extension thumbnail");
+    return undefined;
+  }
   let response_output = ""; // this value is used if the API request times out
   let response_received = false;
   const data = JSON.stringify({
@@ -402,7 +409,7 @@ async function compile_cpp(code_string) {
   });
   xhr.open('POST', 'https://online-code-compiler.p.rapidapi.com/v1/');
   xhr.setRequestHeader('content-type', 'application/json');
-  xhr.setRequestHeader('X-RapidAPI-Key', '591f261ff4msh26f3f44db0aa77bp1c5c8fjsn002736b5e301');
+  xhr.setRequestHeader('X-RapidAPI-Key', API_key);
   xhr.setRequestHeader('X-RapidAPI-Host', 'online-code-compiler.p.rapidapi.com');
   xhr.send(data);
   while (!(response_received || timed_out)) {
@@ -410,4 +417,34 @@ async function compile_cpp(code_string) {
   }
   clearTimeout(timeoutID);
   return response_output;
+}
+
+async function get_API_key(){
+  let timed_out1 = false;
+  let api_key_string = "";
+  let chrome_response_received = false;
+
+  const timed_out_handler = function(){
+    timed_out1 = true;
+  }
+
+  const timeoutID1 = setTimeout(timed_out_handler, 1000);
+  chrome.storage.sync.get(
+    { RAPID_API_KEY: ''},
+    (items) => {
+      api_key_string = items.RAPID_API_KEY;
+      chrome_response_received = true;
+    }
+  );
+  while (!(timed_out1 || chrome_response_received)) {
+    await sleep(100);
+    console.log(timed_out1)
+  }
+  if(timed_out1){
+    console.log("get_API_key() timed ou");
+    return "";
+  }
+  clearTimeout(timeoutID1);
+  console.log("get_API_key() returned " + api_key_string);
+  return api_key_string;
 }
