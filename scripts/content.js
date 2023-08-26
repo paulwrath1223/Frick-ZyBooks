@@ -1,9 +1,6 @@
 
 const e = new Event("change");
 
-let loading_stage = true;
-let listeners_attached = false;
-let currentUrl = location.href;
 
 class problem_solver{
   constructor(problem_type_string, div_class_name, click_event_handler, locator_function) {
@@ -23,18 +20,7 @@ const problem_solvers = [
 ]
 
 setInterval(function() {
-  if(!(currentUrl === location.href)){
-    loading_stage = true;
-    listeners_attached = false;
-    currentUrl = location.href;
-  }
-  if(loading_stage){
-    listeners_attached = false;
-    console.log("loading")
-    loading_stage = (document.getElementsByClassName("zybook-section-title").length === 0);
-  } else {
-    attach_button_event_listeners();
-  }
+  attach_button_event_listeners();
   remove_watermarks();
 }, 200);
 
@@ -48,32 +34,48 @@ async function remove_watermarks(){
 function attach_button_event_listeners(){
   let current_div_ids = [];
   let current_div_id
-  let button_divs;
+  let incomplete_button_divs;
   let button_div_id;
-  let attached = false;
+  let complete_button_divs;
   for (let i = 0; i < problem_solvers.length; i++) {
     current_div_ids = problem_solvers[i].locator_function();
 
     for (let j = 0; j < current_div_ids.length; j++) {
       current_div_id = current_div_ids[j];
 
-      button_divs = document.getElementById(current_div_id).getElementsByClassName("zb-chevron  title-bar-chevron grey   chevron-outline large"); // TODO, also get filled check boxes
-      for (let k = 0; k < button_divs.length; k++) {
+      incomplete_button_divs = document.getElementById(current_div_id).getElementsByClassName("zb-chevron  title-bar-chevron grey   chevron-outline large");
+
+      for (let k = 0; k < incomplete_button_divs.length; k++) {
 
         button_div_id = ("FZYB_" + (problem_solvers[i].problem_type_string) + "_" + j);
-        if(!(button_divs.item(k).id === button_div_id)){
-          button_divs.item(k).id = button_div_id;
+        if (!(incomplete_button_divs.item(k).id === button_div_id)) {
+          incomplete_button_divs.item(k).id = button_div_id;
 
           const copy_of_current_div_id = current_div_id; // probably needed to avoid events calling function with reference of new variable
           document.getElementById(button_div_id).addEventListener('mouseup', (event) => {
             problem_solvers[i].click_event_handler(event, copy_of_current_div_id);
           });
         }
-        attached = true;
+
+      }
+
+      complete_button_divs = document.getElementById(current_div_id).getElementsByClassName("zb-chevron check title-bar-chevron orange  filled  large");
+      for (let k = 0; k < complete_button_divs.length; k++) {
+
+        button_div_id = ("FZYB_" + (problem_solvers[i].problem_type_string) + "_" + j);
+        if (!(complete_button_divs.item(k).id === button_div_id)) {
+          complete_button_divs.item(k).id = button_div_id;
+
+          const copy_of_current_div_id = current_div_id; // probably needed to avoid events calling function with reference of new variable
+          document.getElementById(button_div_id).addEventListener('mouseup', (event) => {
+            problem_solvers[i].click_event_handler(event, copy_of_current_div_id);
+          });
+        }
       }
     }
   }
-  return attached;
+  // TODO: also include completed blue checks, and make this code more modular
+//   zb-chevron check title-bar-chevron blue  filled  large
 }
 
 function get_drag_and_drop_div_ids(){
@@ -196,8 +198,6 @@ function get_animation_div_ids(){
 }
 
 async function animation_div_click_event_handler(event, animation_div_id) {
-  console.log(event);
-  console.log("animation_div_click_event_handler called with ID: " + animation_div_id);
   set_title(animation_div_id, "Processing...");
   while(true){
     let animations = document.getElementById(animation_div_id).getElementsByClassName("zb-button  primary  raised           start-button start-graphic");
