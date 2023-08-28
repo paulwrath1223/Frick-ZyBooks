@@ -129,44 +129,51 @@ async function enter_output_div_click_event_handler(event, enter_output_div_id){
   }
   await sleep(200);
 
-  while(continue_loop(enter_output_div_id) && !experienced_error){
+  let input_divs;
+  while (continue_loop(enter_output_div_id) && !experienced_error) {
+    let input_string = null;
     await sleep(200);
     let code_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("code");
     let code_plain_text = "";
-    if(!(code_DOMs.length === 1)) {
+    if (!(code_DOMs.length === 1)) {
       set_title(enter_output_div_id, "Error: no code found");
       experienced_error = true;
       break;
     }
+    input_divs = document.getElementById(enter_output_div_id).getElementsByClassName("input-div");
+    if(input_divs.length === 1) {
+      input_string = input_divs.item(0).innerHTML;
+    }
+
     code_plain_text = code_DOMs.item(0).innerText;
-    code_output = await compile_cpp(code_plain_text)
-    if(code_output === undefined){
+    code_output = await compile_cpp(code_plain_text, input_string)
+    if (code_output === undefined) {
       experienced_error = true;
       set_title(enter_output_div_id, "Error: API did not produce an output");
       break;
     }
     let input_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("console");
-    if(!(input_DOMs.length === 1)) {
+    if (!(input_DOMs.length === 1)) {
       set_title(enter_output_div_id, "Error: no text area found");
       experienced_error = true;
       break;
     }
+
     input_DOMs.item(0).value = code_output.replace("\\n", "\n");
     input_DOMs.item(0).dispatchEvent(e);
     const check_output_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("zyante-progression-check-button button");
-    if(!(check_output_DOMs.length === 1)) {
+    if (!(check_output_DOMs.length === 1)) {
       set_title(enter_output_div_id, "Error: No \'check\' button found");
       experienced_error = true;
     }
     check_output_DOMs.item(0).click();
-    if(!await check_correctness(enter_output_div_id))
-    {
+    if (!await check_correctness(enter_output_div_id)) {
       set_title(enter_output_div_id, "Error: Incorrect answer or timed out waiting for feedback");
       experienced_error = true;
     }
     await sleep(100);
     const next_DOMs = document.getElementById(enter_output_div_id).getElementsByClassName("zyante-progression-next-button button");
-    if(!(next_DOMs.length === 1)) {
+    if (!(next_DOMs.length === 1)) {
       set_title(enter_output_div_id, "Error: No \'next\' button found");
       experienced_error = true;
       break;
@@ -402,7 +409,7 @@ function set_title(div_id, new_title){
   }
 }
 
-async function compile_cpp(code_string) {
+async function compile_cpp(code_string , input_string) {
   let timed_out = false;
   const timeoutID = setTimeout(() => {
     timed_out = true;
@@ -419,7 +426,7 @@ async function compile_cpp(code_string) {
     language: 'cpp17',
     version: 'latest',
     code: code_string,
-    input: null
+    input: input_string
   });
   const xhr = new XMLHttpRequest();
   xhr.withCredentials = true;
