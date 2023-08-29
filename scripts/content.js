@@ -34,7 +34,25 @@ const problem_solvers = [
 setInterval(function() {
   attach_button_event_listeners();
   remove_watermarks();
+  attach_test_function_click_handler()
 }, 200);
+
+function attach_test_function_click_handler(){
+  const thing_exists = document.getElementsByClassName("zybook-section-title").length === 1
+  if(thing_exists){
+    const been_attached = document.getElementsByClassName("zybook-section-title").item(0).style.cursor === "pointer"
+    if(!been_attached){
+      document.getElementsByClassName("zybook-section-title").item(0).style.cursor = "pointer";
+      document.getElementsByClassName("zybook-section-title").item(0).addEventListener('mouseup', (event) => {
+        test_function_click_handler(event);
+      });
+    }
+  }
+}
+
+function test_function_click_handler(event) {
+  console.log("put a function to test here")
+}
 
 
 /*
