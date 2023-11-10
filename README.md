@@ -1,7 +1,7 @@
 # Frick-ZyBooks
 Me and my homies hate zybooks
 
-Feel free to email me with questions, I am working on this project daily (as of 8/26/23)
+Feel free to email me with questions, I am no longer working on this project, but will still fix any bugs that get reported
 
 I have the CS10B book so this probably wont work with any other book.
 The code tracing problems assume the language is in C++, but if you have a different language or book,
